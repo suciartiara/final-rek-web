@@ -3,44 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Http\Requests\ProductStoreRequest;
-use App\Http\Requests\ProductUpdateRequest;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ProductController extends Controller
 {
-    public function index()
-    {
-        $products = Product::getCachedProducts();
-        
-        return Inertia::render('Products/Index', [
-            'products' => $products
-        ]);
-    }
 
+    public function index(Request $request)
+{
+    // Gunakan query builder untuk pagination yang lebih fleksibel
+    $products = Product::query()
+        ->paginate(10)
+        ->withQueryString(); // Mempertahankan query string
+    
+    return Inertia::render('Products/Index', [
+        'products' => $products
+    ]);
+}
     public function create()
     {
         return Inertia::render('Products/Create');
     }
 
-    public function store(ProductStoreRequest $request)
-    {
-        $validated = $request->validated();
-        
-        $product = Product::create($validated);
+    public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|max:255',
+        'description' => 'nullable',
+        'price' => 'required|numeric'
+    ]);
 
-        return redirect()->route('products.index')
-            ->with('success', 'Produk berhasil dibuat');
-    }
+    $product = Product::create($validated);
 
-    public function show(Product $product)
-    {
-        $product = Product::getCachedProductById($product->id);
-        
-        return Inertia::render('Products/Show', [
-            'product' => $product
-        ]);
-    }
+    // Hapus semua cache terkait produk
+    Cache::tags('products')->flush();
+
+    return redirect()->route('products.index')
+        ->with('success', 'Produk berhasil dibuat');
+}
 
     public function edit(Product $product)
     {
@@ -51,9 +51,13 @@ class ProductController extends Controller
         ]);
     }
 
-    public function update(ProductUpdateRequest $request, Product $product)
+    public function update(Request $request, Product $product)
     {
-        $validated = $request->validated();
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'description' => 'nullable',
+            'price' => 'required|numeric'
+        ]);
 
         $product->update($validated);
 
@@ -67,5 +71,12 @@ class ProductController extends Controller
 
         return redirect()->route('products.index')
             ->with('success', 'Produk berhasil dihapus');
+    }
+
+    public function show(Product $product)
+    {
+        return Inertia::render('Products/Show', [
+            'product' => $product
+        ]);
     }
 }

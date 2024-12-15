@@ -12,6 +12,10 @@ export default function Index() {
         }
     };
 
+    const handlePageVisit = (url) => {
+        router.visit(url);
+    };
+
     return (
         <div className="container mx-auto p-6">
             <Head title="Daftar Produk" />
@@ -68,8 +72,10 @@ export default function Index() {
                 </tbody>
             </table>
 
-            {/* Pagination */}
-            <Pagination links={products.links} />
+            <Pagination
+                links={products.links}
+                onPageChange={handlePageVisit} 
+            />
         </div>
     );
 }
