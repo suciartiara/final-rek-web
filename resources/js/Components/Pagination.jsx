@@ -15,7 +15,7 @@ const Pagination = ({ links, onPageChange }) => {
                         }
                     }}
                     className={`
-                        px-4 py-2 rounded
+                        px-2 py-2 rounded
                         ${
                             link.active
                                 ? "bg-blue-500 text-white"
