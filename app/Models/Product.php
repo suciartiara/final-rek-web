@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['name', 'description', 'price'];
 
     // Metode untuk mendapatkan produk dengan caching Redis
@@ -46,4 +49,5 @@ class Product extends Model
         $this->clearCache();
         return parent::delete();
     }
+
 }
