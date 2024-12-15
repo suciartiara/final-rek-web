@@ -1,6 +1,7 @@
 import React from "react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { router } from "@inertiajs/react";
+import Pagination from "../../Components/Pagination";
 
 export default function Index() {
     const { products } = usePage().props;
@@ -36,7 +37,15 @@ export default function Index() {
                 <tbody>
                     {products.data.map((product) => (
                         <tr key={product.id} className="hover:bg-gray-100">
-                            <td className="border p-3">{product.name}</td>
+                            <td className="border p-3">
+                                {/* Tautan ke halaman show produk */}
+                                <Link
+                                    href={`/products/${product.id}`}
+                                    className="text-blue-500"
+                                >
+                                    {product.name}
+                                </Link>
+                            </td>
                             <td className="border p-3">
                                 Rp {product.price.toLocaleString("id-ID")}
                             </td>
@@ -58,6 +67,9 @@ export default function Index() {
                     ))}
                 </tbody>
             </table>
+
+            {/* Pagination */}
+            <Pagination links={products.links} />
         </div>
     );
 }
