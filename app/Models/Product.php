@@ -13,7 +13,7 @@ class Product extends Model
     protected $fillable = ['name', 'description', 'price'];
 
     // Metode untuk mendapatkan produk dengan caching Redis
-public static function getCachedProducts($perPage = 10)
+    public static function getCachedProducts($perPage = 10)
 {
     // Gunakan parameter page dari request
     $page = request()->get('page', 1);
